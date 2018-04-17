@@ -124,7 +124,7 @@ void execute_commands(COMMAND *commlist) {
                 close(fd2[0]);//por default vão estar abertos ao pai, o que não queremos
                 close(fd2[1]);
             }
-            fd2[0] = fd[0];//atualização do file descriptor antigo.
+            fd2[0] = fd[0];//atualização do file descriptor antigo, esta linha não é necessária.
             fd2[1] = fd[1];
             commlist = commlist->next;//itera-se na lista de comandos
             filhos++;//passa-se ao filho seguinte
@@ -164,11 +164,9 @@ void execute_commands(COMMAND *commlist) {
         }
     }
     if(background_exec == 0){//esperamos caso não haja concorrencia
-        printf("lalalal\n");
-        wait(NULL);
-        /*for(int i=0;i<MAXFORKS;i++){ //o porfessor disse que n devia ser o MAXFORKS nas o num real de filhos
-            waitpid(pid[i], &status, WNOHANG); //o problema está em algo que está no pid[]
-        }*/
+        for(int i=0;i<filhos;i++){
+            waitpid(pid[i], NULL, 0);
+        }
     }
     return;
 }
